@@ -1,4 +1,7 @@
-export const PRIMARY = '#03110E'
-export const SECONDARY = '#26413C'
-export const TERTIARY = '#3E505B'
-export const LIGHT = '#8AB0AB'
+
+export enum  AppColors {
+    PRIMARY = '#03110E',
+    SECONDARY = '#26413C',
+    TERTIARY = '#3E505B',
+    LIGHT = '#8AB0AB'
+}

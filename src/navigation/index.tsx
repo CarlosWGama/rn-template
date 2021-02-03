@@ -6,7 +6,7 @@ import { MainScreen } from '../screens/main';
 
 const Stack = createStackNavigator()
 
-export default function Navigation() {
+export default function MainNavigation() {
     return (
         <NavigationContainer>
             <Stack.Navigator screenOptions={{headerShown: false}}>

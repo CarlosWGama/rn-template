@@ -1,9 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components/native'
-import * as Colors from './colors';
+import { AppColors } from './colors';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons'
+import moment from 'moment';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 export const AppMain: any = styled.View`
     flex: 1;
@@ -28,7 +30,7 @@ export const AppTextError: any = styled.Text`
 `
 
 export const AppButton = (props: {title:string, onPress?:any, style?:any}) => (
-    <View style={[{backgroundColor: Colors.PRIMARY, padding: 10, borderRadius: 5}, props.style]}>
+    <View style={[{backgroundColor: AppColors.PRIMARY, padding: 10, borderRadius: 5}, props.style]}>
         <TouchableOpacity onPress={() => props.onPress()}>
             <Text style={{color:'white', textAlign:'center'}}>{props.title}</Text>
         </TouchableOpacity>
@@ -57,7 +59,7 @@ export const AppHeader = (props:{backButton?:boolean, backScreen?:string, titulo
             top: 0,
             width: '100%',
             height: 70,
-            backgroundColor: Colors.SECONDARY,
+            backgroundColor: AppColors.SECONDARY,
             borderBottomStartRadius: 10,
             borderBottomEndRadius: 10
         }}>
@@ -82,4 +84,26 @@ export const AppHeader = (props:{backButton?:boolean, backScreen?:string, titulo
             </View>
         </View>
     )
+}
+
+export function AppCalendario(props: {valor?: string, onChange: any}) {
+    
+    const [ calendario, setCalendario ] = useState(false);
+    const { valor, onChange } = props;
+
+    return (
+    <>
+        <TouchableOpacity onPress={() => setCalendario(true)}>
+            <Text>{valor != undefined ? moment(valor).format('DD/MM/YYYY') : 'Clique para selecionar data'}</Text>
+        </TouchableOpacity>
+        {calendario && 
+            <DateTimePicker
+            value={ (valor != undefined ? new Date(valor) : new Date())}
+            mode="date"
+            onChange={(event, data) => {
+                setCalendario(false);
+                onChange(moment(data).format('YYYY-MM-DD'))
+            }}
+            />}
+    </>)
 }

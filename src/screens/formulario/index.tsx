@@ -1,20 +1,24 @@
 import * as React from 'react';
 import { View, Text, Button, TextInput, StyleSheet, ActivityIndicator, Platform, ToastAndroid, Image } from 'react-native';
-import { AppMain, AppHeader, AppContainer, AppInput, AppButton } from '../../themes/theme'; 
+import { AppMain, AppHeader, AppContainer, AppInput, AppButton, AppCalendario } from '../../themes/theme'; 
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import UsuarioService from '../../services/usuario.service';
 import { useNavigation } from '@react-navigation/native';
 import { Toast } from '../../global/helpers';
+import { Usuario } from '../../models/usuario';
+import { AppColors } from '../../themes/colors';
 
 export function FormularioScreen () {
 
-    // //Cadastra o usuário
+    //Cadastra o usuário
     const [erro, setErro] = React.useState<string|null>(null);
     const nav = useNavigation()
+    const [ usuario, setUsuario ] = React.useState<Usuario>({});
 
     const cadastrar = async (dados, {resetForm}) => {
         setErro(null);
+
         const resposta = await UsuarioService.cadastrar(dados);
         if (resposta.sucesso) {
             resetForm({});
@@ -34,7 +38,7 @@ export function FormularioScreen () {
  
             <Formik
                 //Dados iniciais 
-                initialValues={{nome: '', email: '', senha: ''}}
+                initialValues={usuario}
                 // Validação de formulário
                 validationSchema={Yup.object().shape({
                     nome: Yup.string().required('Nome obrigatório'),
@@ -44,7 +48,7 @@ export function FormularioScreen () {
                 //Envio
                 onSubmit={cadastrar}
             >
-                {({errors, handleBlur, handleChange, handleSubmit, touched, isSubmitting}) => (
+                {({values, errors, handleBlur, handleChange, setFieldValue, handleSubmit, touched, isSubmitting}) => (
                     <View style={style.formulario}>
                         <Text style={style.titulo}>Cadastro de Usuário</Text>
 
@@ -65,16 +69,26 @@ export function FormularioScreen () {
                         </AppInput>
 
                         {/* SENHA */}
-                        <AppInput titulo="Senha" touched={touched.senha} error={errors.senha} noBorder>
+                        <AppInput titulo="Senha" touched={touched.senha} error={errors.senha}>
                             <TextInput 
                                 placeholder="Digite sua senha"
                                 secureTextEntry
                                 onBlur={handleBlur('senha')} 
                                 onChangeText={handleChange('senha')} />
                         </AppInput>
+
+                        {/* DATA NASCIMENTO */}
+                        <AppInput titulo="Data de Nascimento" error={errors.data_nascimento} noBorder>
+                            <AppCalendario
+                            valor={values.data_nascimento} onChange={(data) => {
+                                setFieldValue('data_nascimento', data)
+                            }}
+                            />
+                        </AppInput>
+
                         {/* Botão */}
                         { erro && <Text style={style.erro}>{erro}</Text>}
-                        { isSubmitting && <ActivityIndicator />}
+                        { isSubmitting && <ActivityIndicator size={20} color={AppColors.PRIMARY}/>}
                         { !isSubmitting && <AppButton title="Cadastrar" onPress={handleSubmit}/>}
 
                     </View>
